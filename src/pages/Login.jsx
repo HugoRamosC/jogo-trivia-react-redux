@@ -14,14 +14,14 @@ class Login extends React.Component {
     };
   }
 
-  redirectToGame = () => {
+  redirectToGame = async () => {
     const { history } = this.props;
+    const getToken = await triviaTokenApi();
+    localStorage.setItem('token', getToken.token);
     history.push('/game');
   };
 
-  validateCredentials = async () => {
-    const getToken = await triviaTokenApi();
-    localStorage.setItem('token', getToken.token);
+  validateCredentials = () => {
     const { name, email } = this.state;
     const validateName = name.length > 0;
     const regex = /\S+@\S+\.\S+/;
