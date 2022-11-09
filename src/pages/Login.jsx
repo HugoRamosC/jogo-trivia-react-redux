@@ -38,6 +38,7 @@ class Login extends React.Component {
 
   render() {
     const { email, name, btnCheck } = this.state;
+    const { history } = this.props;
     return (
       <div className="App">
         <header className="App-header">
@@ -74,6 +75,13 @@ class Login extends React.Component {
               Entrar
             </button>
           </form>
+          <button
+            data-testid="btn-settings"
+            type="button"
+            onClick={ () => history.push('/settings') }
+          >
+            Configuraçãoes
+          </button>
 
         </header>
       </div>
