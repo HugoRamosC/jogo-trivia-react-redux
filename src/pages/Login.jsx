@@ -22,7 +22,6 @@ class Login extends React.Component {
   validateCredentials = async () => {
     const getToken = await triviaTokenApi();
     localStorage.setItem('token', getToken.token);
-
     const { name, email } = this.state;
     const validateName = name.length > 0;
     const regex = /\S+@\S+\.\S+/;
@@ -80,9 +79,8 @@ class Login extends React.Component {
             type="button"
             onClick={ () => history.push('/settings') }
           >
-            Configuraçãoes
+            Configurações
           </button>
-
         </header>
       </div>
     );
