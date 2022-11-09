@@ -1,6 +1,5 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import triviaTokenApi from '../services/tokenApi';
 import logo from '../trivia.png';
