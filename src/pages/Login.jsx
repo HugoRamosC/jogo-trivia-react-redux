@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import logo from '../trivia.png';
 
@@ -28,6 +29,7 @@ class Login extends React.Component {
 
   render() {
     const { email, name, btnCheck } = this.state;
+    const { history } = this.props;
     return (
       <div className="App">
         <header className="App-header">
@@ -64,11 +66,22 @@ class Login extends React.Component {
               Entrar
             </button>
           </form>
+          <button
+            data-testid="btn-settings"
+            type="button"
+            onClick={ () => history.push('/settings') }
+          >
+            Configuraçãoes
+          </button>
 
         </header>
       </div>
     );
   }
 }
+
+Login.propTypes = {
+  history: PropTypes.func.isRequired,
+};
 
 export default connect()(Login);
