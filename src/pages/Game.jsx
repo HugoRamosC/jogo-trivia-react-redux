@@ -1,14 +1,14 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
-import md5 from 'crypto-js/md5';
+import Header from '../components/Header';
+
 import './Game.css';
 
 class Game extends React.Component {
   constructor() {
     super();
     this.state = {
-      img: '',
       currentQuestion: 0,
       sortedQuestions: [],
       answerActive: false,
@@ -17,7 +17,6 @@ class Game extends React.Component {
 
   async componentDidMount() {
     const { currentQuestion } = this.state;
-    this.fetchImg();
     const data = await this.fetchQuestions();
     console.log(data.results);
     const question = data.results[currentQuestion];
@@ -36,12 +35,6 @@ class Game extends React.Component {
       question,
       correctAnswer });
   }
-
-  fetchImg = () => {
-    const { gravatarEmail } = this.props;
-    const hash = md5(gravatarEmail).toString();
-    this.setState({ img: hash });
-  };
 
   // checkToken = () => {
   //   const { history } = this.props;
@@ -93,21 +86,18 @@ class Game extends React.Component {
   }
 
   render() {
-    const { name, score } = this.props;
-    const { img, answerActive, sortedQuestions, question, correctAnswer } = this.state;
+    const { answerActive, sortedQuestions, question, correctAnswer } = this.state;
     return (
       <>
-        <header>
-          <img src={ `https://www.gravatar.com/avatar/${img}` } data-testid="header-profile-picture" alt="Img" />
-          <h2 data-testid="header-player-name">{ name }</h2>
-          <h2 data-testid="header-score">{ score }</h2>
-        </header>
+        <Header />
         <main>
           {question ? (
             <>
               <p data-testid="question-category">{question.category}</p>
+              <h2>Pergunta:</h2>
               <p data-testid="question-text">{question.question}</p>
               <div data-testid="answer-options">
+
                 {sortedQuestions.length > 0 ? sortedQuestions.map((a, index) => (
                   <button
                     className={ answerActive ? this.checkClass(a) : '' }
@@ -131,18 +121,9 @@ class Game extends React.Component {
 }
 
 Game.propTypes = {
-  gravatarEmail: PropTypes.string.isRequired,
   history: PropTypes.shape({
     push: PropTypes.func,
   }).isRequired,
-  name: PropTypes.string.isRequired,
-  score: PropTypes.number.isRequired,
 };
 
-const mapStateToProps = (state) => ({
-  name: state.player.name,
-  gravatarEmail: state.player.gravatarEmail,
-  score: state.player.score,
-});
-
-export default connect(mapStateToProps)(Game);
+export default connect()(Game);
