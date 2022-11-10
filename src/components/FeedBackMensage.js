@@ -9,11 +9,11 @@ class FeedBackMensage extends Component {
     const totalAssertions = 3;
     return (
       <div
-        className="feedBack-msg"
+        className="card-feedBack-msg"
       >
         {
           (assertions >= totalAssertions) ? (
-            <div className="positive-feedBack-msg">
+            <div className="feedBack-msg">
               <img
                 src="https://i.kym-cdn.com/photos/images/original/001/701/625/240.jpg"
                 alt="foto"
@@ -29,7 +29,7 @@ class FeedBackMensage extends Component {
               <p>{`Um total de ${score} pontos`}</p>
             </div>
           ) : (
-            <div className="negative-feedBack-msg">
+            <div className="feedBack-msg">
               <img
                 src="https://i.kym-cdn.com/photos/images/original/001/701/625/240.jpg"
                 alt="foto"

@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
+import FeedBackMensage from '../components/FeedBackMensage';
 import { actionLogin } from '../redux/action/actions';
 import triviaTokenApi from '../services/tokenApi';
 import logo from '../trivia.png';
@@ -87,6 +88,7 @@ class Login extends React.Component {
             </button>
           </form>
         </header>
+        <FeedBackMensage />
       </div>
     );
   }
