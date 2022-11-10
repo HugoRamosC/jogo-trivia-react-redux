@@ -15,21 +15,19 @@ class Game extends React.Component {
     this.fetchImg();
   }
 
-  fetchImg = async () => {
+  fetchImg = () => {
     const { gravatarEmail } = this.props;
     const hash = md5(gravatarEmail).toString();
-    const imgUrl = await fetch(`https://www.gravatar.com/avatar/${hash}`);
-    this.setState({ img: imgUrl.url });
-    // return imgUrl;
+    this.setState({ img: hash });
   };
 
   render() {
     const { name, score } = this.props;
     const { img } = this.state;
-    // console.log(img);
+    console.log(img);
     return (
       <header>
-        <img src={ img } data-testid="header-profile-picture" alt="Img" />
+        <img src={ `https://www.gravatar.com/avatar/${img}` } data-testid="header-profile-picture" alt="Img" />
         <h2 data-testid="header-player-name">{ name }</h2>
         <h2 data-testid="header-score">{ score }</h2>
       </header>
