@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
+import { actionLogin } from '../redux/actions/actions';
 import triviaTokenApi from '../services/tokenApi';
 import logo from '../trivia.png';
 
@@ -15,9 +16,10 @@ class Login extends React.Component {
   }
 
   redirectToGame = async () => {
-    const { history } = this.props;
+    const { history, dispatch } = this.props;
     const getToken = await triviaTokenApi();
     localStorage.setItem('token', getToken.token);
+    dispatch(actionLogin(this.state));
     history.push('/game');
   };
 
