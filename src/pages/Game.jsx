@@ -56,12 +56,6 @@ class Game extends React.Component {
       correctAnswer });
   };
 
-  fetchImg = () => {
-    const { gravatarEmail } = this.props;
-    const hash = md5(gravatarEmail).toString();
-    this.setState({ img: hash });
-  };
-
   // problema era que o erro não estava sendo tratado no fetch
   // não estavamos passando o erro que vinha do fetch e sim simulando um erro
   fetchQuestions = async () => {
@@ -119,7 +113,7 @@ class Game extends React.Component {
 
   nextQuestion = () => {
     const { currentQuestion } = this.state;
-    const { dispatch } = this.props;
+    const { dispatch, history } = this.props;
     const three = 3;
     if (currentQuestion <= three) {
       this.setState(
@@ -132,7 +126,7 @@ class Game extends React.Component {
         },
       );
     } else {
-      // colocar o redirecionamento p/ feedback
+      history.push('/feedback');
     }
   };
 
@@ -145,9 +139,8 @@ class Game extends React.Component {
   }
 
   render() {
-    const { name, score, answerActive: timerActive } = this.props;
+    const { answerActive: timerActive } = this.props;
     const {
-      img,
       answerActive,
       sortedQuestions,
       question,
@@ -201,11 +194,9 @@ class Game extends React.Component {
 Game.propTypes = {
   answerActive: PropTypes.bool.isRequired,
   dispatch: PropTypes.func.isRequired,
-  gravatarEmail: PropTypes.string.isRequired,
   history: PropTypes.shape({
     push: PropTypes.func,
   }).isRequired,
-  name: PropTypes.string.isRequired,
   score: PropTypes.number.isRequired,
   timerValue: PropTypes.number.isRequired,
 };
