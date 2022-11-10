@@ -10,15 +10,31 @@ class Game extends React.Component {
     this.state = {
       img: '',
       currentQuestion: 0,
-      questions: [],
+      sortedQuestions: [],
       answerActive: false,
     };
   }
 
   async componentDidMount() {
+    const { currentQuestion } = this.state;
     this.fetchImg();
     const data = await this.fetchQuestions();
-    this.setState({ questions: data.results });
+    console.log(data.results);
+    const question = data.results[currentQuestion];
+    let incorrectAnswers = [];
+    let correctAnswer = '';
+    if (question) {
+      // settando qual resposta é a certa
+      correctAnswer = question.correct_answer;
+      incorrectAnswers = question.incorrect_answers;
+    }
+    // spreadando respostas erradas e adicionando a correta
+    const newArr = [...incorrectAnswers, correctAnswer];
+    this.shuffleArray(newArr);
+    this.setState({ questions: data.results,
+      sortedQuestions: newArr,
+      question,
+      correctAnswer });
   }
 
   fetchImg = () => {
@@ -60,6 +76,14 @@ class Game extends React.Component {
     this.setState({ answerActive: true });
   };
 
+  checkClass = (a) => {
+    const { questions, currentQuestion } = this.state;
+    const correctAnswer = questions[currentQuestion].correct_answer;
+
+    return a === correctAnswer
+      ? 'right-answer' : 'wrong-answer';
+  };
+
   shuffleArray(inputArray) {
     if (inputArray.length > 0) {
       const zeroFive = 0.5;
@@ -70,19 +94,7 @@ class Game extends React.Component {
 
   render() {
     const { name, score } = this.props;
-    const { img, questions, currentQuestion, answerActive } = this.state;
-    console.log(questions);
-    const question = questions[currentQuestion];
-    let incorrectAnswers = [];
-    let correctAnswer = '';
-    if (question) {
-      // settando qual resposta é a certa
-      correctAnswer = question.correct_answer;
-      incorrectAnswers = question.incorrect_answers;
-    }
-    // spreadando respostas erradas e adicionando a correta
-    const newArr = [...incorrectAnswers, correctAnswer];
-    this.shuffleArray(newArr);
+    const { img, answerActive, sortedQuestions, question, correctAnswer } = this.state;
     return (
       <>
         <header>
@@ -96,10 +108,9 @@ class Game extends React.Component {
               <p data-testid="question-category">{question.category}</p>
               <p data-testid="question-text">{question.question}</p>
               <div data-testid="answer-options">
-                {newArr.length > 0 ? newArr.map((a, index) => (
+                {sortedQuestions.length > 0 ? sortedQuestions.map((a, index) => (
                   <button
-                    className={ a === correctAnswer && answerActive
-                      ? 'right-answer' : 'wrong-answer' }
+                    className={ answerActive ? this.checkClass(a) : '' }
                     data-testid={ a === correctAnswer
                       ? 'correct-answer'
                       : `wrong-answer-${index}` }
