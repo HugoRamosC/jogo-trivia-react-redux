@@ -38,6 +38,19 @@ class Game extends React.Component {
       correctAnswer });
   }
 
+  updateQuestion = () => {
+    const { currentQuestion, questions } = this.state;
+    const question = questions[currentQuestion];
+    const correctAnswer = question.correct_answer;
+    const incorrectAnswers = question.incorrect_answers;
+    // spreadando respostas erradas e adicionando a correta
+    const newArr = [...incorrectAnswers, correctAnswer];
+    this.shuffleArray(newArr);
+    this.setState({ sortedQuestions: newArr,
+      question,
+      correctAnswer });
+  };
+
   fetchImg = () => {
     const { gravatarEmail } = this.props;
     const hash = md5(gravatarEmail).toString();
@@ -86,9 +99,21 @@ class Game extends React.Component {
   };
 
   nextQuestion = () => {
-    this.setState(
-      (prev) => ({ currentQuestion: prev.currentQuestion + 1, answered: false }),
-    );
+    const { currentQuestion } = this.state;
+    const three = 3;
+    if (currentQuestion <= three) {
+      console.log(currentQuestion);
+      this.setState(
+        (prev) => ({ currentQuestion: prev.currentQuestion + 1,
+          answered: false,
+          answerActive: false }),
+        () => {
+          this.updateQuestion();
+        },
+      );
+    } else {
+      // colocar o redirecionamento p/ feedback
+    }
   };
 
   shuffleArray(inputArray) {
