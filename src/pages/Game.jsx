@@ -12,6 +12,7 @@ class Game extends React.Component {
       currentQuestion: 0,
       sortedQuestions: [],
       answerActive: false,
+      answered: false,
     };
   }
 
@@ -73,7 +74,7 @@ class Game extends React.Component {
 
   // guardando a função para uso futuro
   checkAnswer = () => {
-    this.setState({ answerActive: true });
+    this.setState({ answerActive: true, answered: true });
   };
 
   checkClass = (a) => {
@@ -82,6 +83,12 @@ class Game extends React.Component {
 
     return a === correctAnswer
       ? 'right-answer' : 'wrong-answer';
+  };
+
+  nextQuestion = () => {
+    this.setState(
+      (prev) => ({ currentQuestion: prev.currentQuestion + 1, answered: false }),
+    );
   };
 
   shuffleArray(inputArray) {
@@ -94,7 +101,13 @@ class Game extends React.Component {
 
   render() {
     const { name, score } = this.props;
-    const { img, answerActive, sortedQuestions, question, correctAnswer } = this.state;
+    const {
+      img,
+      answerActive,
+      sortedQuestions,
+      question,
+      correctAnswer,
+      answered } = this.state;
     return (
       <>
         <header>
@@ -124,6 +137,16 @@ class Game extends React.Component {
               </div>
             </>
           ) : null}
+          { answered === true
+            ? (
+              <button
+                data-testid="btn-next"
+                type="button"
+                onClick={ this.nextQuestion }
+              >
+                Next
+              </button>
+            ) : null }
         </main>
       </>
     );
