@@ -11,6 +11,7 @@ class Game extends React.Component {
       img: '',
       currentQuestion: 0,
       questions: [],
+      answerActive: false,
     };
   }
 
@@ -46,6 +47,7 @@ class Game extends React.Component {
     const request = await fetch(`https://opentdb.com/api.php?amount=5&token=${token}`);
     const data = await request.json();
     const code = 3;
+    // response_code é um paramentro da API que diz se deu erro (3) ou tudo ok (0)
     if (data.response_code === code) {
       localStorage.removeItem('token');
       history.push('/');
@@ -54,14 +56,9 @@ class Game extends React.Component {
   };
 
   // guardando a função para uso futuro
-  // checkAnswer = ({ target: { value } }) => {
-  //   const { data, currentQuestion } = this.state;
-  //   const correctAnswer = data.results[currentQuestion].correct_answer;
-  //   // console.log(correctAnswer);
-  //   if (value === correctAnswer) {
-
-  //   }
-  // };
+  checkAnswer = () => {
+    this.setState({ answerActive: true });
+  };
 
   shuffleArray(inputArray) {
     if (inputArray.length > 0) {
@@ -73,7 +70,8 @@ class Game extends React.Component {
 
   render() {
     const { name, score } = this.props;
-    const { img, questions, currentQuestion } = this.state;
+    const { img, questions, currentQuestion, answerActive } = this.state;
+    console.log(questions);
     const question = questions[currentQuestion];
     let incorrectAnswers = [];
     let correctAnswer = '';
@@ -100,6 +98,8 @@ class Game extends React.Component {
               <div data-testid="answer-options">
                 {newArr.length > 0 ? newArr.map((a, index) => (
                   <button
+                    className={ a === correctAnswer && answerActive
+                      ? 'right-answer' : 'wrong-answer' }
                     data-testid={ a === correctAnswer
                       ? 'correct-answer'
                       : `wrong-answer-${index}` }
@@ -108,15 +108,11 @@ class Game extends React.Component {
                     onClick={ this.checkAnswer }
                   >
                     {a}
-
                   </button>
                 )) : null }
               </div>
             </>
           ) : null}
-          <p>categoria</p>
-          <p>texto da pergunta</p>
-          <p>alternativas</p>
         </main>
       </>
     );
