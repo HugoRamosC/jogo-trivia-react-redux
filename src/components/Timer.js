@@ -10,6 +10,8 @@ class Timer extends Component {
   };
 
   componentDidMount() {
+    const { timerValue } = this.props;
+    this.setState({ time: timerValue });
     this.createInterval();
   }
 
@@ -59,6 +61,7 @@ Timer.propTypes = {
 
 const mapStateToProps = (state) => ({
   answerActive: state.time.timeIsOver,
+  timerValue: state.time.timerValue,
 });
 
 export default connect(mapStateToProps)(Timer);

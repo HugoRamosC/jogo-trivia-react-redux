@@ -4,22 +4,23 @@ import { connect } from 'react-redux';
 import md5 from 'crypto-js/md5';
 import './Game.css';
 import Timer from '../components/Timer';
-import { finishTime, actionUpdateScore } from '../redux/action/actions';
+import { finishTime,
+  actionUpdateScore, actionNextQuestion } from '../redux/action/actions';
 
 class Game extends React.Component {
   constructor() {
     super();
-    const { answerActive: aA } = this.props;
     this.state = {
       img: '',
       currentQuestion: 0,
       sortedQuestions: [],
-      answerActive: aA,
+      answerActive: false,
       answered: false,
     };
   }
 
   async componentDidMount() {
+    const { answerActive } = this.props;
     const { currentQuestion } = this.state;
     this.fetchImg();
     const data = await this.fetchQuestions();
@@ -38,7 +39,9 @@ class Game extends React.Component {
     this.setState({ questions: data.results,
       sortedQuestions: newArr,
       question,
-      correctAnswer });
+      correctAnswer,
+      answerActive,
+    });
   }
 
   updateQuestion = () => {
@@ -117,15 +120,16 @@ class Game extends React.Component {
 
   nextQuestion = () => {
     const { currentQuestion } = this.state;
+    const { dispatch } = this.props;
     const three = 3;
     if (currentQuestion <= three) {
-      console.log(currentQuestion);
       this.setState(
         (prev) => ({ currentQuestion: prev.currentQuestion + 1,
           answered: false,
           answerActive: false }),
         () => {
           this.updateQuestion();
+          dispatch(actionNextQuestion());
         },
       );
     } else {
@@ -142,7 +146,7 @@ class Game extends React.Component {
   }
 
   render() {
-    const { name, score } = this.props;
+    const { name, score, answerActive: timerActive } = this.props;
     const {
       img,
       answerActive,
@@ -171,7 +175,7 @@ class Game extends React.Component {
                       : `wrong-answer-${index}` }
                     type="button"
                     key={ a }
-                    disabled={ answerActive }
+                    disabled={ timerActive }
                     onClick={ () => this.checkAnswer(a) }
                   >
                     {a}
