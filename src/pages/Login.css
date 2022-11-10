@@ -1,0 +1,25 @@
+.form-login {
+  display: flex;
+  flex-direction: column;
+  margin-top: 15px;
+  padding: 10px;
+}
+
+.form-login > label > input {
+  margin-left: 10px;
+}
+
+.settings-button {
+  background-color: red;
+  font-weight: 700;
+  border: red;
+  margin-top: 5px;
+}
+
+.play-button {
+  margin-top: 10px;
+  background-color: lightgreen;
+  font-weight: 700;
+  color: rgb(0, 0, 0);
+  border: lightgreen
+}
