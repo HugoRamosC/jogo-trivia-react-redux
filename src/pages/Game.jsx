@@ -9,10 +9,13 @@ import { finishTime, actionUpdateScore } from '../redux/action/actions';
 class Game extends React.Component {
   constructor() {
     super();
+    const { answerActive: aA } = this.props;
     this.state = {
       img: '',
       currentQuestion: 0,
       sortedQuestions: [],
+      answerActive: aA,
+      answered: false,
     };
   }
 
@@ -38,6 +41,19 @@ class Game extends React.Component {
       correctAnswer });
   }
 
+  updateQuestion = () => {
+    const { currentQuestion, questions } = this.state;
+    const question = questions[currentQuestion];
+    const correctAnswer = question.correct_answer;
+    const incorrectAnswers = question.incorrect_answers;
+    // spreadando respostas erradas e adicionando a correta
+    const newArr = [...incorrectAnswers, correctAnswer];
+    this.shuffleArray(newArr);
+    this.setState({ sortedQuestions: newArr,
+      question,
+      correctAnswer });
+  };
+
   fetchImg = () => {
     const { gravatarEmail } = this.props;
     const hash = md5(gravatarEmail).toString();
@@ -62,6 +78,7 @@ class Game extends React.Component {
   };
 
   // guardando a função para uso futuro
+
   checkAnswer = (answer) => {
     // pegar o tempo do timmer
     const { correctAnswer, question } = this.state;
@@ -87,6 +104,7 @@ class Game extends React.Component {
       const updatedScore = score + (ten + (timerValue * difficulty));
       dispatch(actionUpdateScore(updatedScore));
     }
+    this.setState({ answerActive: true, answered: true });
   };
 
   checkClass = (a) => {
@@ -95,6 +113,24 @@ class Game extends React.Component {
 
     return a === correctAnswer
       ? 'right-answer' : 'wrong-answer';
+  };
+
+  nextQuestion = () => {
+    const { currentQuestion } = this.state;
+    const three = 3;
+    if (currentQuestion <= three) {
+      console.log(currentQuestion);
+      this.setState(
+        (prev) => ({ currentQuestion: prev.currentQuestion + 1,
+          answered: false,
+          answerActive: false }),
+        () => {
+          this.updateQuestion();
+        },
+      );
+    } else {
+      // colocar o redirecionamento p/ feedback
+    }
   };
 
   shuffleArray(inputArray) {
@@ -106,8 +142,14 @@ class Game extends React.Component {
   }
 
   render() {
-    const { name, score, answerActive } = this.props;
-    const { img, sortedQuestions, question, correctAnswer } = this.state;
+    const { name, score } = this.props;
+    const {
+      img,
+      answerActive,
+      sortedQuestions,
+      question,
+      correctAnswer,
+      answered } = this.state;
     return (
       <>
         <header>
@@ -139,6 +181,16 @@ class Game extends React.Component {
               <Timer />
             </>
           ) : null}
+          { answered === true
+            ? (
+              <button
+                data-testid="btn-next"
+                type="button"
+                onClick={ this.nextQuestion }
+              >
+                Next
+              </button>
+            ) : null }
         </main>
       </>
     );
