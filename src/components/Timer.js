@@ -1,35 +1,51 @@
+import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { finishTime, getTimer } from '../redux/action/actions';
 
 class Timer extends Component {
   state = {
     time: 30,
-    failAnswer: false,
+    intervalCreated: false,
   };
 
   componentDidMount() {
-    const ONE_SECOND = 1000;
-    setInterval(() => {
-      this.setState((prev) => ({ time: prev.time - 1 }));
-    }, ONE_SECOND);
+    this.createInterval();
   }
 
   componentDidUpdate() {
+    const { dispatch } = this.props;
     const { time } = this.state;
+    dispatch(getTimer(time));
     if (time === 0) {
-      this.setState({
-        failAnswer: true,
-        time: 30,
-      });
+      dispatch(finishTime());
+      // this.createInterval();
     }
   }
 
+  createInterval = () => {
+    const { intervalCreated, time } = this.state;
+    let interval = '';
+    if (!intervalCreated) {
+      const ONE_SECOND = 1000;
+      interval = setInterval(() => {
+        this.setState((prev) => ({ time: prev.time - 1 }));
+      }, ONE_SECOND);
+      this.setState({ intervalCreated: true });
+    }
+    if (time === 0) {
+      clearInterval(interval);
+    }
+  };
+
   render() {
-    const { time, failAnswer } = this.state;
+    const { time } = this.state;
+    const { answerActive } = this.props;
     return (
       <div>
         {
-          failAnswer
-            ? <p>Sem Resposta</p>
+          answerActive
+            ? <p>Tempo esgotado!</p>
             : time
         }
       </div>
@@ -37,4 +53,12 @@ class Timer extends Component {
   }
 }
 
-export default Timer;
+Timer.propTypes = {
+  answerActive: PropTypes.bool,
+}.isRequired;
+
+const mapStateToProps = (state) => ({
+  answerActive: state.time.timeIsOver,
+});
+
+export default connect(mapStateToProps)(Timer);
