@@ -1,0 +1,37 @@
+img {
+  border-radius: 50%;
+  text-align: center;
+}
+
+.feedBack-msg {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 40%;
+  background-color: aqua;
+  border-radius: 15px;
+  justify-content: center;
+  margin: auto;
+  border-color: aliceblue;
+  box-shadow: 2px 2px rgb(151, 233, 161);
+}
+
+.positive-feedBack-msg {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+}
+.negative-feedBack-msg {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.negative-title {
+  color: red;
+}
+
+.positive-title {
+  color: rgb(4, 172, 24);
+}
