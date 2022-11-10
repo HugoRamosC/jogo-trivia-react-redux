@@ -40,6 +40,7 @@ describe('Testa a funcionalidade da Login Page', () => {
     const buttonSettings = screen.getByTestId('btn-settings') 
     userEvent.click(buttonSettings)
   })
+
   test('Teste se ao clicar em entrar a rota está correta', async () => {
     const { history } =renderWithRouterAndRedux(<App />);
     const email = screen.getByTestId('input-gravatar-email');
@@ -51,7 +52,27 @@ describe('Testa a funcionalidade da Login Page', () => {
 
     userEvent.click(button)
     
-    expect(await screen.findByText('Game')).toBeInTheDocument()
-    expect(history.location.pathname).toBe('/game')
+    expect(history.location.pathname).toBe('/')
+
+    userEvent.clear(email)
+    userEvent.clear(name)
+
+    expect(button).toBeDisabled()
   });
+
+  test('Testa se os botões esta desativado quando esta fora dos critérios', () => {
+    renderWithRouterAndRedux(<App />);
+    const email = screen.getByTestId('input-gravatar-email');
+    const name = screen.getByTestId('input-player-name');
+    const button = screen.getByTestId('btn-play')
+
+    userEvent.type(email, 'teste@teste.com')
+    userEvent.type(name, 'Bob Esponja')
+    expect(button).not.toBeDisabled()
+    
+    userEvent.clear(email)
+    userEvent.clear(name)
+
+    expect(button).toBeDisabled()
+  })
 })

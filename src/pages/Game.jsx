@@ -1,7 +1,8 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
-import md5 from 'crypto-js/md5';
+import Header from '../components/Header';
+
 import './Game.css';
 import Timer from '../components/Timer';
 import { finishTime,
@@ -11,7 +12,6 @@ class Game extends React.Component {
   constructor() {
     super();
     this.state = {
-      img: '',
       currentQuestion: 0,
       sortedQuestions: [],
       answerActive: false,
@@ -22,7 +22,6 @@ class Game extends React.Component {
   async componentDidMount() {
     const { answerActive } = this.props;
     const { currentQuestion } = this.state;
-    this.fetchImg();
     const data = await this.fetchQuestions();
     // console.log(data.results);
     const question = data.results[currentQuestion];
@@ -55,12 +54,6 @@ class Game extends React.Component {
     this.setState({ sortedQuestions: newArr,
       question,
       correctAnswer });
-  };
-
-  fetchImg = () => {
-    const { gravatarEmail } = this.props;
-    const hash = md5(gravatarEmail).toString();
-    this.setState({ img: hash });
   };
 
   // problema era que o erro não estava sendo tratado no fetch
@@ -120,7 +113,7 @@ class Game extends React.Component {
 
   nextQuestion = () => {
     const { currentQuestion } = this.state;
-    const { dispatch } = this.props;
+    const { dispatch, history } = this.props;
     const three = 3;
     if (currentQuestion <= three) {
       this.setState(
@@ -133,7 +126,7 @@ class Game extends React.Component {
         },
       );
     } else {
-      // colocar o redirecionamento p/ feedback
+      history.push('/feedback');
     }
   };
 
@@ -146,9 +139,8 @@ class Game extends React.Component {
   }
 
   render() {
-    const { name, score, answerActive: timerActive } = this.props;
+    const { answerActive: timerActive } = this.props;
     const {
-      img,
       answerActive,
       sortedQuestions,
       question,
@@ -156,17 +148,15 @@ class Game extends React.Component {
       answered } = this.state;
     return (
       <>
-        <header>
-          <img src={ `https://www.gravatar.com/avatar/${img}` } data-testid="header-profile-picture" alt="Img" />
-          <h2 data-testid="header-player-name">{ name }</h2>
-          <h2 data-testid="header-score">{ score }</h2>
-        </header>
+        <Header />
         <main>
           {question ? (
             <>
               <p data-testid="question-category">{question.category}</p>
+              <h2>Pergunta:</h2>
               <p data-testid="question-text">{question.question}</p>
               <div data-testid="answer-options">
+
                 {sortedQuestions.length > 0 ? sortedQuestions.map((a, index) => (
                   <button
                     className={ answerActive ? this.checkClass(a) : '' }
@@ -204,11 +194,9 @@ class Game extends React.Component {
 Game.propTypes = {
   answerActive: PropTypes.bool.isRequired,
   dispatch: PropTypes.func.isRequired,
-  gravatarEmail: PropTypes.string.isRequired,
   history: PropTypes.shape({
     push: PropTypes.func,
   }).isRequired,
-  name: PropTypes.string.isRequired,
   score: PropTypes.number.isRequired,
   timerValue: PropTypes.number.isRequired,
 };
