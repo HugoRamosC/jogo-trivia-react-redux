@@ -11,15 +11,15 @@
 
 .settings-button {
   background-color: red;
-  font-weight: 700;
   border: red;
+  font-weight: 700;
   margin-top: 5px;
 }
 
 .play-button {
-  margin-top: 10px;
   background-color: lightgreen;
+  border: lightgreen;
+  color: black;
   font-weight: 700;
-  color: rgb(0, 0, 0);
-  border: lightgreen
+  margin-top: 10px;
 }
