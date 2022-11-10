@@ -1,7 +1,12 @@
 async function triviaTokenApi() {
-  const request = await fetch('https://opentdb.com/api_token.php?command=request');
-  const response = await request.json();
-  return response;
+  try {
+    const request = await fetch('https://opentdb.com/api_token.php?command=request');
+    const response = await request.json();
+    return response.token;
+  } catch (error) {
+    console.log(error);
+    return error.message;
+  }
 }
 
 export default triviaTokenApi;

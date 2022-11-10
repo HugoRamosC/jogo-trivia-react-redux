@@ -8,11 +8,15 @@ class Game extends React.Component {
     super();
     this.state = {
       img: '',
+      currentQuestion: 0,
+      questions: [],
     };
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     this.fetchImg();
+    const data = await this.fetchQuestions();
+    this.setState({ questions: data.results });
   }
 
   fetchImg = () => {
@@ -21,22 +25,108 @@ class Game extends React.Component {
     this.setState({ img: hash });
   };
 
+  // checkToken = () => {
+  //   const { history } = this.props;
+  //   const token = localStorage.getItem('token');
+  //   console.log(token);
+  //   if (token === '') {
+  //     console.log(1);
+  //     localStorage.removeItem('token');
+  //     history.push('/');
+  //   }
+  // };
+
+  // problema era que o erro não estava sendo tratado no fetch
+  // não estavamos passando o erro que vinha do fetch e sim simulando um erro
+  fetchQuestions = async () => {
+    // await this.checkToken();
+    const { history } = this.props;
+    const token = localStorage.getItem('token');
+    const request = await fetch(`https://opentdb.com/api.php?amount=5&token=${token}`);
+    const data = await request.json();
+    const code = 3;
+    if (data.response_code === code) {
+      localStorage.removeItem('token');
+      history.push('/');
+    }
+    return data;
+  };
+
+  // guardando a função para uso futuro
+  // checkAnswer = ({ target: { value } }) => {
+  //   const { data, currentQuestion } = this.state;
+  //   const correctAnswer = data.results[currentQuestion].correct_answer;
+  //   // console.log(correctAnswer);
+  //   if (value === correctAnswer) {
+
+  //   }
+  // };
+
+  shuffleArray(inputArray) {
+    if (inputArray.length > 0) {
+      const zeroFive = 0.5;
+      const arr = inputArray.sort(() => Math.random() - zeroFive);
+      return arr;
+    }
+  }
+
   render() {
     const { name, score } = this.props;
-    const { img } = this.state;
-    console.log(img);
+    const { img, questions, currentQuestion } = this.state;
+    const question = questions[currentQuestion];
+    let incorrectAnswers = [];
+    let correctAnswer = '';
+    if (question) {
+      // settando qual resposta é a certa
+      correctAnswer = question.correct_answer;
+      incorrectAnswers = question.incorrect_answers;
+    }
+    // spreadando respostas erradas e adicionando a correta
+    const newArr = [...incorrectAnswers, correctAnswer];
+    this.shuffleArray(newArr);
     return (
-      <header>
-        <img src={ `https://www.gravatar.com/avatar/${img}` } data-testid="header-profile-picture" alt="Img" />
-        <h2 data-testid="header-player-name">{ name }</h2>
-        <h2 data-testid="header-score">{ score }</h2>
-      </header>
+      <>
+        <header>
+          <img src={ `https://www.gravatar.com/avatar/${img}` } data-testid="header-profile-picture" alt="Img" />
+          <h2 data-testid="header-player-name">{ name }</h2>
+          <h2 data-testid="header-score">{ score }</h2>
+        </header>
+        <main>
+          {question ? (
+            <>
+              <p data-testid="question-category">{question.category}</p>
+              <p data-testid="question-text">{question.question}</p>
+              <div data-testid="answer-options">
+                {newArr.length > 0 ? newArr.map((a, index) => (
+                  <button
+                    data-testid={ a === correctAnswer
+                      ? 'correct-answer'
+                      : `wrong-answer-${index}` }
+                    type="button"
+                    key={ a }
+                    onClick={ this.checkAnswer }
+                  >
+                    {a}
+
+                  </button>
+                )) : null }
+              </div>
+            </>
+          ) : null}
+          <p>categoria</p>
+          <p>texto da pergunta</p>
+          <p>alternativas</p>
+        </main>
+      </>
     );
   }
 }
 
 Game.propTypes = {
   gravatarEmail: PropTypes.string.isRequired,
+  history: PropTypes.shape({
+    push: PropTypes.func,
+  }).isRequired,
   name: PropTypes.string.isRequired,
   score: PropTypes.number.isRequired,
 };

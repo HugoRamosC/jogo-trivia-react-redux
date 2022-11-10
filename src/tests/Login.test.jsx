@@ -53,5 +53,5 @@ describe('Testa a funcionalidade da Login Page', () => {
     
     expect(await screen.findByText('Game')).toBeInTheDocument()
     expect(history.location.pathname).toBe('/game')
-});
+  });
 })

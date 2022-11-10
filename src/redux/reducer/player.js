@@ -1,4 +1,4 @@
-import { login } from '../actions/actions';
+import { login } from '../action/actions';
 
 const INITIAL_STATE = {
   name: '',

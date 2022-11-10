@@ -1,9 +1,10 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
-import { actionLogin } from '../redux/actions/actions';
+import { actionLogin } from '../redux/action/actions';
 import triviaTokenApi from '../services/tokenApi';
 import logo from '../trivia.png';
+import './Login.css';
 
 class Login extends React.Component {
   constructor() {
@@ -18,7 +19,7 @@ class Login extends React.Component {
   redirectToGame = async () => {
     const { history, dispatch } = this.props;
     const getToken = await triviaTokenApi();
-    localStorage.setItem('token', getToken.token);
+    localStorage.setItem('token', getToken);
     dispatch(actionLogin(this.state));
     history.push('/game');
   };
@@ -44,7 +45,7 @@ class Login extends React.Component {
       <div className="App">
         <header className="App-header">
           <img src={ logo } className="App-logo" alt="logo" />
-          <form>
+          <form className="form-login">
             <label htmlFor="email">
               Email
               <input
@@ -68,6 +69,7 @@ class Login extends React.Component {
               />
             </label>
             <button
+              className="play-button"
               data-testid="btn-play"
               type="button"
               disabled={ btnCheck }
@@ -75,14 +77,15 @@ class Login extends React.Component {
             >
               Entrar
             </button>
+            <button
+              className="settings-button"
+              data-testid="btn-settings"
+              type="button"
+              onClick={ () => history.push('/settings') }
+            >
+              Configurações
+            </button>
           </form>
-          <button
-            data-testid="btn-settings"
-            type="button"
-            onClick={ () => history.push('/settings') }
-          >
-            Configurações
-          </button>
         </header>
       </div>
     );
