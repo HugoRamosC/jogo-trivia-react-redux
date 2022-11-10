@@ -6,13 +6,13 @@ import { connect } from 'react-redux';
 class FeedBackMensage extends Component {
   render() {
     const { score, assertions } = this.props;
-    const totalPoints = 3;
+    const totalAssertions = 3;
     return (
       <div
         className="feedBack-msg"
       >
         {
-          (assertions >= totalPoints) ? (
+          (assertions >= totalAssertions) ? (
             <div className="positive-feedBack-msg">
               <img
                 src="https://i.kym-cdn.com/photos/images/original/001/701/625/240.jpg"
