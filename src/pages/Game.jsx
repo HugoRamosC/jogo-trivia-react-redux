@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import md5 from 'crypto-js/md5';
 import './Game.css';
 import Timer from '../components/Timer';
-import { finishTime } from '../redux/action/actions';
+import { finishTime, actionUpdateScore } from '../redux/action/actions';
 
 class Game extends React.Component {
   constructor() {
@@ -44,17 +44,6 @@ class Game extends React.Component {
     this.setState({ img: hash });
   };
 
-  // checkToken = () => {
-  //   const { history } = this.props;
-  //   const token = localStorage.getItem('token');
-  //   console.log(token);
-  //   if (token === '') {
-  //     console.log(1);
-  //     localStorage.removeItem('token');
-  //     history.push('/');
-  //   }
-  // };
-
   // problema era que o erro não estava sendo tratado no fetch
   // não estavamos passando o erro que vinha do fetch e sim simulando um erro
   fetchQuestions = async () => {
@@ -73,9 +62,31 @@ class Game extends React.Component {
   };
 
   // guardando a função para uso futuro
-  checkAnswer = () => {
-    const { dispatch } = this.props;
+  checkAnswer = (answer) => {
+    // pegar o tempo do timmer
+    const { correctAnswer, question } = this.state;
+    const { score, dispatch, timerValue } = this.props;
     dispatch(finishTime());
+    const ten = 10;
+    const three = 3;
+    let difficulty = 1;
+    switch (question.difficulty) {
+    case 'easy':
+      difficulty = 1;
+      break;
+    case 'medium':
+      difficulty = 2;
+      break;
+    case 'hard':
+      difficulty = three;
+      break;
+    default:
+      break;
+    }
+    if (answer === correctAnswer) {
+      const updatedScore = score + (ten + (timerValue * difficulty));
+      dispatch(actionUpdateScore(updatedScore));
+    }
   };
 
   checkClass = (a) => {
@@ -118,8 +129,8 @@ class Game extends React.Component {
                       : `wrong-answer-${index}` }
                     type="button"
                     key={ a }
-                    onClick={ this.checkAnswer }
                     disabled={ answerActive }
+                    onClick={ () => this.checkAnswer(a) }
                   >
                     {a}
                   </button>
@@ -143,6 +154,7 @@ Game.propTypes = {
   }).isRequired,
   name: PropTypes.string.isRequired,
   score: PropTypes.number.isRequired,
+  timerValue: PropTypes.number.isRequired,
 };
 
 const mapStateToProps = (state) => ({
@@ -150,6 +162,7 @@ const mapStateToProps = (state) => ({
   gravatarEmail: state.player.gravatarEmail,
   score: state.player.score,
   answerActive: state.time.timeIsOver,
+  timerValue: state.time.timerValue,
 });
 
 export default connect(mapStateToProps)(Game);

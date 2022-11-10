@@ -1,5 +1,7 @@
 export const login = 'login';
 export const TIMEOUT = 'TIMEOUT';
+export const updateScore = 'updateScore';
+export const getTimerValue = 'getTimerValue';
 
 export const actionLogin = (state) => ({
   type: login,
@@ -9,4 +11,14 @@ export const actionLogin = (state) => ({
 
 export const finishTime = () => ({
   type: TIMEOUT,
+});
+
+export const getTimer = (time) => ({
+  type: getTimerValue,
+  time,
+});
+
+export const actionUpdateScore = (updatedScore) => ({
+  type: updateScore,
+  updatedScore,
 });

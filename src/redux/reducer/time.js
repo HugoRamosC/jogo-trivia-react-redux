@@ -1,4 +1,4 @@
-import { TIMEOUT } from '../action/actions';
+import { getTimerValue, TIMEOUT } from '../action/actions';
 
 const INITIAL_STATE = {
   timeIsOver: false,
@@ -10,6 +10,11 @@ const time = (state = INITIAL_STATE, action) => {
     return {
       ...state,
       timeIsOver: true,
+    };
+  case getTimerValue:
+    return {
+      ...state,
+      timerValue: action.time,
     };
   default:
     return state;
