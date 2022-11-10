@@ -4,6 +4,9 @@ import { connect } from 'react-redux';
 import Header from '../components/Header';
 
 import './Game.css';
+import Timer from '../components/Timer';
+import { finishTime,
+  actionUpdateScore, actionNextQuestion } from '../redux/action/actions';
 
 class Game extends React.Component {
   constructor() {
@@ -12,13 +15,15 @@ class Game extends React.Component {
       currentQuestion: 0,
       sortedQuestions: [],
       answerActive: false,
+      answered: false,
     };
   }
 
   async componentDidMount() {
+    const { answerActive } = this.props;
     const { currentQuestion } = this.state;
     const data = await this.fetchQuestions();
-    console.log(data.results);
+    // console.log(data.results);
     const question = data.results[currentQuestion];
     let incorrectAnswers = [];
     let correctAnswer = '';
@@ -33,19 +38,29 @@ class Game extends React.Component {
     this.setState({ questions: data.results,
       sortedQuestions: newArr,
       question,
-      correctAnswer });
+      correctAnswer,
+      answerActive,
+    });
   }
 
-  // checkToken = () => {
-  //   const { history } = this.props;
-  //   const token = localStorage.getItem('token');
-  //   console.log(token);
-  //   if (token === '') {
-  //     console.log(1);
-  //     localStorage.removeItem('token');
-  //     history.push('/');
-  //   }
-  // };
+  updateQuestion = () => {
+    const { currentQuestion, questions } = this.state;
+    const question = questions[currentQuestion];
+    const correctAnswer = question.correct_answer;
+    const incorrectAnswers = question.incorrect_answers;
+    // spreadando respostas erradas e adicionando a correta
+    const newArr = [...incorrectAnswers, correctAnswer];
+    this.shuffleArray(newArr);
+    this.setState({ sortedQuestions: newArr,
+      question,
+      correctAnswer });
+  };
+
+  fetchImg = () => {
+    const { gravatarEmail } = this.props;
+    const hash = md5(gravatarEmail).toString();
+    this.setState({ img: hash });
+  };
 
   // problema era que o erro não estava sendo tratado no fetch
   // não estavamos passando o erro que vinha do fetch e sim simulando um erro
@@ -65,8 +80,33 @@ class Game extends React.Component {
   };
 
   // guardando a função para uso futuro
-  checkAnswer = () => {
-    this.setState({ answerActive: true });
+
+  checkAnswer = (answer) => {
+    // pegar o tempo do timmer
+    const { correctAnswer, question } = this.state;
+    const { score, dispatch, timerValue } = this.props;
+    dispatch(finishTime());
+    const ten = 10;
+    const three = 3;
+    let difficulty = 1;
+    switch (question.difficulty) {
+    case 'easy':
+      difficulty = 1;
+      break;
+    case 'medium':
+      difficulty = 2;
+      break;
+    case 'hard':
+      difficulty = three;
+      break;
+    default:
+      break;
+    }
+    if (answer === correctAnswer) {
+      const updatedScore = score + (ten + (timerValue * difficulty));
+      dispatch(actionUpdateScore(updatedScore));
+    }
+    this.setState({ answerActive: true, answered: true });
   };
 
   checkClass = (a) => {
@@ -75,6 +115,25 @@ class Game extends React.Component {
 
     return a === correctAnswer
       ? 'right-answer' : 'wrong-answer';
+  };
+
+  nextQuestion = () => {
+    const { currentQuestion } = this.state;
+    const { dispatch } = this.props;
+    const three = 3;
+    if (currentQuestion <= three) {
+      this.setState(
+        (prev) => ({ currentQuestion: prev.currentQuestion + 1,
+          answered: false,
+          answerActive: false }),
+        () => {
+          this.updateQuestion();
+          dispatch(actionNextQuestion());
+        },
+      );
+    } else {
+      // colocar o redirecionamento p/ feedback
+    }
   };
 
   shuffleArray(inputArray) {
@@ -86,7 +145,14 @@ class Game extends React.Component {
   }
 
   render() {
-    const { answerActive, sortedQuestions, question, correctAnswer } = this.state;
+    const { name, score, answerActive: timerActive } = this.props;
+    const {
+      img,
+      answerActive,
+      sortedQuestions,
+      question,
+      correctAnswer,
+      answered } = this.state;
     return (
       <>
         <Header />
@@ -106,14 +172,26 @@ class Game extends React.Component {
                       : `wrong-answer-${index}` }
                     type="button"
                     key={ a }
-                    onClick={ this.checkAnswer }
+                    disabled={ timerActive }
+                    onClick={ () => this.checkAnswer(a) }
                   >
                     {a}
                   </button>
                 )) : null }
               </div>
+              <Timer />
             </>
           ) : null}
+          { answered === true
+            ? (
+              <button
+                data-testid="btn-next"
+                type="button"
+                onClick={ this.nextQuestion }
+              >
+                Next
+              </button>
+            ) : null }
         </main>
       </>
     );
@@ -121,9 +199,23 @@ class Game extends React.Component {
 }
 
 Game.propTypes = {
+  answerActive: PropTypes.bool.isRequired,
+  dispatch: PropTypes.func.isRequired,
+  gravatarEmail: PropTypes.string.isRequired,
   history: PropTypes.shape({
     push: PropTypes.func,
   }).isRequired,
+  name: PropTypes.string.isRequired,
+  score: PropTypes.number.isRequired,
+  timerValue: PropTypes.number.isRequired,
 };
 
-export default connect()(Game);
+const mapStateToProps = (state) => ({
+  name: state.player.name,
+  gravatarEmail: state.player.gravatarEmail,
+  score: state.player.score,
+  answerActive: state.time.timeIsOver,
+  timerValue: state.time.timerValue,
+});
+
+export default connect(mapStateToProps)(Game);
