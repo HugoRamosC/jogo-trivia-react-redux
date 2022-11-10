@@ -1,16 +1,54 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 
 class Ranking extends Component {
+  state = {
+    imgGrvtr: 0,
+    playersArr: [],
+  };
+
+  componentDidMount() {
+    this.fetchGravatarImg();
+    this.savePlayer();
+  }
+
+  fetchGravatarImg = () => {
+    const { gravatarEmail } = this.props;
+    const hash = md5(gravatarEmail).toString();
+    this.setState({ imgGrvtr: hash });
+  };
+
+  savePlayer = () => {
+    const { imgGrvtr } = this.state;
+    const { name, score } = this.props;
+    const newPlyr = { name, score, imgGrvtr };
+    this.setState(
+      (prev) => ({ playersArr: [...prev.playersArr, newPlyr] }),
+      () => localStorage.setItem('players', playersArr),
+    );
+  };
+
   redirectToHome = () => {
     const { history } = this.props;
     history.push('/');
   };
 
   render() {
+    const arrPlayers = localStorage.getItem('players').sort(a.score - b.score);
     return (
       <div>
         Ranking
+        <ol>
+          { arrPlayers.map((player, index) => (
+            <li key={ index }>
+              <img src={ `https://www.gravatar.com/avatar/${player.imgGrvtr}` } alt="avatarImage" />
+              <h2 data-testid={ `player-name-${index}` }>{ player.name }</h2>
+              <h2 data-testid={ `player-score-${index}` }>{ player.score }</h2>
+            </li>
+          ))}
+        </ol>
+
         <button
           type="button"
           onClick={ this.redirectToHome }
@@ -29,4 +67,10 @@ Ranking.propTypes = {
   }),
 }.isRequired;
 
-export default Ranking;
+const mapStateToProps = (state) => ({
+  name: state.player.name,
+  gravatarEmail: state.player.gravatarEmail,
+  score: state.player.score,
+});
+
+export default connect(mapStateToProps)(Ranking);
