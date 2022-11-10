@@ -1,9 +1,11 @@
+import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { finishTime } from '../redux/action/actions';
 
 class Timer extends Component {
   state = {
     time: 30,
-    failAnswer: false,
   };
 
   componentDidMount() {
@@ -16,20 +18,19 @@ class Timer extends Component {
   componentDidUpdate() {
     const { time } = this.state;
     if (time === 0) {
-      this.setState({
-        failAnswer: true,
-        time: 30,
-      });
+      const { dispatch } = this.props;
+      dispatch(finishTime());
     }
   }
 
   render() {
-    const { time, failAnswer } = this.state;
+    const { time } = this.state;
+    const { answerActive } = this.props;
     return (
       <div>
         {
-          failAnswer
-            ? <p>Sem Resposta</p>
+          answerActive
+            ? <p>Tempo esgotado!</p>
             : time
         }
       </div>
@@ -37,4 +38,12 @@ class Timer extends Component {
   }
 }
 
-export default Timer;
+Timer.propTypes = {
+  answerActive: PropTypes.bool,
+}.isRequired;
+
+const mapStateToProps = (state) => ({
+  answerActive: state.time.timeIsOver,
+});
+
+export default connect(mapStateToProps)(Timer);

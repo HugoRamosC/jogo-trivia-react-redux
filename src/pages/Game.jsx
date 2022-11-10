@@ -3,6 +3,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 import md5 from 'crypto-js/md5';
 import './Game.css';
+import Timer from '../components/Timer';
+import { finishTime } from '../redux/action/actions';
 
 class Game extends React.Component {
   constructor() {
@@ -11,7 +13,6 @@ class Game extends React.Component {
       img: '',
       currentQuestion: 0,
       sortedQuestions: [],
-      answerActive: false,
     };
   }
 
@@ -19,7 +20,7 @@ class Game extends React.Component {
     const { currentQuestion } = this.state;
     this.fetchImg();
     const data = await this.fetchQuestions();
-    console.log(data.results);
+    // console.log(data.results);
     const question = data.results[currentQuestion];
     let incorrectAnswers = [];
     let correctAnswer = '';
@@ -73,7 +74,8 @@ class Game extends React.Component {
 
   // guardando a função para uso futuro
   checkAnswer = () => {
-    this.setState({ answerActive: true });
+    const { dispatch } = this.props;
+    dispatch(finishTime());
   };
 
   checkClass = (a) => {
@@ -93,8 +95,8 @@ class Game extends React.Component {
   }
 
   render() {
-    const { name, score } = this.props;
-    const { img, answerActive, sortedQuestions, question, correctAnswer } = this.state;
+    const { name, score, answerActive } = this.props;
+    const { img, sortedQuestions, question, correctAnswer } = this.state;
     return (
       <>
         <header>
@@ -117,11 +119,13 @@ class Game extends React.Component {
                     type="button"
                     key={ a }
                     onClick={ this.checkAnswer }
+                    disabled={ answerActive }
                   >
                     {a}
                   </button>
                 )) : null }
               </div>
+              <Timer />
             </>
           ) : null}
         </main>
@@ -131,6 +135,8 @@ class Game extends React.Component {
 }
 
 Game.propTypes = {
+  answerActive: PropTypes.bool.isRequired,
+  dispatch: PropTypes.func.isRequired,
   gravatarEmail: PropTypes.string.isRequired,
   history: PropTypes.shape({
     push: PropTypes.func,
@@ -143,6 +149,7 @@ const mapStateToProps = (state) => ({
   name: state.player.name,
   gravatarEmail: state.player.gravatarEmail,
   score: state.player.score,
+  answerActive: state.time.timeIsOver,
 });
 
 export default connect(mapStateToProps)(Game);
