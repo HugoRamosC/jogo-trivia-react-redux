@@ -10,10 +10,15 @@ class Feedback extends React.Component {
     history.push('/ranking');
   };
 
+  reloadStart = () => {
+    const { history } = this.props;
+    history.push('/');
+  };
+
   render() {
     return (
       <>
-        <Header />
+        <Header reloadStart={ this.reloadStart } />
         <div data-testid="feedback-text" />
         <button
           type="button"
