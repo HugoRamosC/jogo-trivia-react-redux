@@ -23,7 +23,7 @@ class Header extends React.Component {
   };
 
   render() {
-    const { name, score, history } = this.props;
+    const { name, score, reloadStart } = this.props;
     const { img } = this.state;
     return (
       <header>
@@ -35,7 +35,7 @@ class Header extends React.Component {
         <button
           data-testid="btn-play-again"
           type="button"
-          onClick={ () => history.push('/') }
+          onClick={ reloadStart }
         >
           Play Again
         </button>
@@ -50,6 +50,7 @@ Header.propTypes = {
     push: PropTypes.func,
   }).isRequired,
   name: PropTypes.string.isRequired,
+  reloadStart: PropTypes.func.isRequired,
   score: PropTypes.number.isRequired,
 };
 

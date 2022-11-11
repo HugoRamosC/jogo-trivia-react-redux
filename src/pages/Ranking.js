@@ -1,3 +1,4 @@
+import { MD5 } from 'crypto-js';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
@@ -15,7 +16,7 @@ class Ranking extends Component {
 
   fetchGravatarImg = () => {
     const { gravatarEmail } = this.props;
-    const hash = md5(gravatarEmail).toString();
+    const hash = MD5(gravatarEmail).toString();
     this.setState({ imgGrvtr: hash });
   };
 
@@ -25,7 +26,10 @@ class Ranking extends Component {
     const newPlyr = { name, score, imgGrvtr };
     this.setState(
       (prev) => ({ playersArr: [...prev.playersArr, newPlyr] }),
-      () => localStorage.setItem('players', playersArr),
+      () => {
+        const { playersArr } = this.state;
+        localStorage.setItem('players', JSON.stringify(playersArr));
+      },
     );
   };
 
@@ -35,18 +39,24 @@ class Ranking extends Component {
   };
 
   render() {
-    const arrPlayers = localStorage.getItem('players').sort(a.score - b.score);
+    const arrPlayers = JSON.parse(localStorage.getItem('players'))
+      ? JSON.parse(localStorage.getItem('players'))
+      : ['test'];
+    console.log(arrPlayers);
+    // .sort((a, b) => a.score - b.score);
     return (
       <>
         <h1 data-testid="ranking-title">Ranking</h1>
         <ol>
-          { arrPlayers.map((player, index) => (
-            <li key={ index }>
-              <img src={ `https://www.gravatar.com/avatar/${player.imgGrvtr}` } alt="avatarImage" />
-              <h2 data-testid={ `player-name-${index}` }>{ player.name }</h2>
-              <h2 data-testid={ `player-score-${index}` }>{ player.score }</h2>
-            </li>
-          ))}
+          { arrPlayers.length > 0
+            ? arrPlayers.map((player, index) => (
+              <li key={ index }>
+                <img src={ `https://www.gravatar.com/avatar/${player.imgGrvtr}` } alt="avatarImage" />
+                <h3 data-testid={ `player-name-${index}` }>{ player.name }</h3>
+                <h3 data-testid={ `player-score-${index}` }>{ player.score }</h3>
+              </li>
+            ))
+            : null}
         </ol>
         <button
           type="button"

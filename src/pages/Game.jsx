@@ -130,6 +130,15 @@ class Game extends React.Component {
     }
   };
 
+  reloadStart = () => {
+    const { history } = this.props;
+    this.setState({
+      currentQuestion: 0,
+      answerActive: false,
+      answered: false,
+    }, () => history.push('/'));
+  };
+
   shuffleArray(inputArray) {
     if (inputArray.length > 0) {
       const zeroFive = 0.5;
@@ -148,7 +157,7 @@ class Game extends React.Component {
       answered } = this.state;
     return (
       <>
-        <Header />
+        <Header reloadStart={ this.reloadStart } />
         <main>
           {question ? (
             <>
