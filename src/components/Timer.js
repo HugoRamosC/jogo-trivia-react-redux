@@ -21,6 +21,7 @@ class Timer extends Component {
     dispatch(getTimer(time));
     if (time === 0) {
       dispatch(finishTime());
+      // dispatch(getTimer(30));
       // this.createInterval();
     }
   }
@@ -41,14 +42,14 @@ class Timer extends Component {
   };
 
   render() {
-    const { time } = this.state;
-    const { answerActive } = this.props;
+    // const { time } = this.state;
+    const { answerActive, timerValue } = this.props;
     return (
       <div>
         {
           answerActive
             ? <p>Tempo esgotado!</p>
-            : time
+            : timerValue
         }
       </div>
     );
