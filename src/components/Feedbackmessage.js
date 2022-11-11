@@ -7,10 +7,9 @@ class FeedBackMensage extends Component {
   render() {
     const { score, assertions } = this.props;
     const totalAssertions = 3;
+
     return (
-      <div
-        className="card-feedBack-msg"
-      >
+      <div className="card-feedBack-msg">
         {
           (assertions >= totalAssertions) ? (
             <div className="feedBack-msg">
