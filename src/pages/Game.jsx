@@ -5,7 +5,9 @@ import Header from '../components/Header';
 import './Game.css';
 import Timer from '../components/Timer';
 import { finishTime,
-  actionUpdateScore, actionNextQuestion } from '../redux/action/actions';
+  actionUpdateScore,
+  actionNextQuestion,
+  actionResetTimerFlag } from '../redux/action/actions';
 
 class Game extends React.Component {
   constructor() {
@@ -120,8 +122,9 @@ class Game extends React.Component {
           answered: false,
           answerActive: false }),
         () => {
-          this.updateQuestion();
           dispatch(actionNextQuestion());
+          dispatch(actionResetTimerFlag());
+          this.updateQuestion();
         },
       );
     } else {
@@ -161,7 +164,6 @@ class Game extends React.Component {
           {question ? (
             <>
               <p data-testid="question-category">{question.category}</p>
-              <h2>Pergunta:</h2>
               <p data-testid="question-text">{question.question}</p>
               <div data-testid="answer-options">
 

@@ -1,8 +1,9 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
-import Feedbackmessage from '../components/Feedbackmessage';
-import { actionLogin } from '../redux/action/actions';
+import { actionLogin,
+  actionNextQuestion,
+  actionResetTimerFlag } from '../redux/action/actions';
 import triviaTokenApi from '../services/tokenApi';
 import logo from '../trivia.png';
 import './Login.css';
@@ -22,6 +23,8 @@ class Login extends React.Component {
     const getToken = await triviaTokenApi();
     localStorage.setItem('token', getToken);
     dispatch(actionLogin(this.state));
+    dispatch(actionResetTimerFlag());
+    dispatch(actionNextQuestion());
     history.push('/game');
   };
 
@@ -88,7 +91,6 @@ class Login extends React.Component {
             </button>
           </form>
         </header>
-        <Feedbackmessage />
       </div>
     );
   }

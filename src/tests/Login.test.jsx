@@ -1,5 +1,5 @@
 import React from 'react';
-import { screen } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import { renderWithRouterAndRedux } from './helpers/renderWithRouterAndRedux';
 import userEvent from '@testing-library/user-event';
 import App from '../App';
@@ -42,22 +42,20 @@ describe('Testa a funcionalidade da Login Page', () => {
   })
 
   test('Teste se ao clicar em entrar a rota está correta', async () => {
-    const { history } =renderWithRouterAndRedux(<App />);
+    const { history } = renderWithRouterAndRedux(<App />);
     const email = screen.getByTestId('input-gravatar-email');
     const name = screen.getByTestId('input-player-name');
 
-    const button = screen.getByTestId('btn-play')
+    
     userEvent.type(email, 'teste@teste.com')
     userEvent.type(name, 'Bob Esponja')
 
+    const button = screen.getByTestId('btn-play')
     userEvent.click(button)
     
-    expect(history.location.pathname).toBe('/')
-
-    userEvent.clear(email)
-    userEvent.clear(name)
-
-    expect(button).toBeDisabled()
+    const btnPlayAgain = await screen.findByTestId('btn-play-again')
+    expect (btnPlayAgain).toBeInTheDocument()
+    expect(history.location.pathname).toBe('/game')
   });
 
   test('Testa se os botões esta desativado quando esta fora dos critérios', () => {

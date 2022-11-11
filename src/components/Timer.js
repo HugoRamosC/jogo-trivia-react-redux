@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { finishTime, getTimer } from '../redux/action/actions';
+import { actionNoResetTimerFlag, finishTime, getTimer } from '../redux/action/actions';
 
 class Timer extends Component {
   state = {
@@ -16,13 +16,18 @@ class Timer extends Component {
   }
 
   componentDidUpdate() {
-    const { dispatch } = this.props;
+    const { dispatch, resetTimer } = this.props;
+    console.log(resetTimer);
     const { time } = this.state;
     dispatch(getTimer(time));
     if (time === 0) {
       dispatch(finishTime());
       // dispatch(getTimer(30));
       // this.createInterval();
+    }
+    if (resetTimer) {
+      dispatch(actionNoResetTimerFlag());
+      this.setState({ time: 30 });
     }
   }
 
@@ -63,6 +68,7 @@ Timer.propTypes = {
 const mapStateToProps = (state) => ({
   answerActive: state.time.timeIsOver,
   timerValue: state.time.timerValue,
+  resetTimer: state.time.resetTimer,
 });
 
 export default connect(mapStateToProps)(Timer);
