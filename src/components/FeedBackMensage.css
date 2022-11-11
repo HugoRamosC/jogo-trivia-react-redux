@@ -1,0 +1,32 @@
+img {
+  border-radius: 50%;
+  box-shadow: 0 0 20px 2px #566573;
+  margin-top: 50px;
+  text-align: center;
+}
+
+.card-feedBack-msg {
+  background-color: #282c34;
+  border: solid 5px #21242a;
+  border-radius: 15px;
+  box-shadow: 0 0 50px 1px #17202a inset;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: auto;
+  width: 40%;
+}
+
+.feedBack-msg {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+}
+
+.negative-title {
+  color: red;
+}
+
+.positive-title {
+  color: rgb(4, 172, 24);
+}

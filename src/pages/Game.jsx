@@ -2,7 +2,6 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
 import Header from '../components/Header';
-
 import './Game.css';
 import Timer from '../components/Timer';
 import { finishTime,
