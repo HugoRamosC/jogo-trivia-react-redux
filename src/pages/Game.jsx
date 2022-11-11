@@ -7,7 +7,9 @@ import Timer from '../components/Timer';
 import { finishTime,
   actionUpdateScore,
   actionNextQuestion,
-  actionResetTimerFlag } from '../redux/action/actions';
+  actionResetTimerFlag,
+  restartScore,
+} from '../redux/action/actions';
 
 class Game extends React.Component {
   constructor() {
@@ -133,12 +135,13 @@ class Game extends React.Component {
   };
 
   reloadStart = () => {
-    const { history } = this.props;
+    const { history, dispatch } = this.props;
     this.setState({
       currentQuestion: 0,
       answerActive: false,
       answered: false,
     }, () => history.push('/'));
+    dispatch(restartScore());
   };
 
   shuffleArray(inputArray) {
