@@ -7,7 +7,6 @@ class FeedBackMensage extends Component {
   render() {
     const { score, assertions } = this.props;
     const totalAssertions = 3;
-    console.log(score);
 
     return (
       <div className="card-feedBack-msg">

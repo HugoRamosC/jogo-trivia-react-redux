@@ -58,9 +58,7 @@ class Ranking extends Component {
     //   ? JSON.parse(localStorage.getItem('players'))
     //   : ['test'];
     const { playersArr } = this.state;
-    console.log(playersArr);
     const orderArr = playersArr.sort((a, b) => b.score - a.score);
-    console.log(orderArr);
     return (
       <>
         <h1 data-testid="ranking-title">Ranking</h1>

@@ -17,7 +17,6 @@ class Timer extends Component {
 
   componentDidUpdate() {
     const { dispatch, resetTimer } = this.props;
-    console.log(resetTimer);
     const { time } = this.state;
     dispatch(getTimer(time));
     if (time === 0) {
