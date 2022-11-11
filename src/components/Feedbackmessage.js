@@ -7,6 +7,7 @@ class FeedBackMensage extends Component {
   render() {
     const { score, assertions } = this.props;
     const totalAssertions = 3;
+    console.log(score);
 
     return (
       <div className="card-feedBack-msg">
@@ -24,8 +25,20 @@ class FeedBackMensage extends Component {
               >
                 Well Done!
               </h1>
-              <p>{`voce acertou ${assertions} questões!`}</p>
-              <p>{`Um total de ${score} pontos`}</p>
+              <div>
+                voce acertou
+                {' '}
+                <p data-testid="feedback-total-question">{assertions}</p>
+                {' '}
+                questões!
+              </div>
+              <div>
+                Um total de
+                {' '}
+                <p data-testid="feedback-total-score">{score}</p>
+                {' '}
+                pontos
+              </div>
             </div>
           ) : (
             <div className="feedBack-msg">
@@ -40,8 +53,20 @@ class FeedBackMensage extends Component {
               >
                 Could be better...
               </h1>
-              <p>{`voce acertou ${assertions} questões!`}</p>
-              <p>{`Um total de ${score} pontos`}</p>
+              <div>
+                voce acertou
+                {' '}
+                <p data-testid="feedback-total-question">{assertions}</p>
+                {' '}
+                questões!
+              </div>
+              <div>
+                Um total de
+                {' '}
+                <p data-testid="feedback-total-score">{score}</p>
+                {' '}
+                pontos
+              </div>
             </div>
           )
         }
