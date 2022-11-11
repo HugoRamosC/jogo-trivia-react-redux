@@ -37,8 +37,8 @@ class Ranking extends Component {
   render() {
     const arrPlayers = localStorage.getItem('players').sort(a.score - b.score);
     return (
-      <div>
-        Ranking
+      <>
+        <h1 data-testid="ranking-title">Ranking</h1>
         <ol>
           { arrPlayers.map((player, index) => (
             <li key={ index }>
@@ -48,7 +48,6 @@ class Ranking extends Component {
             </li>
           ))}
         </ol>
-
         <button
           type="button"
           onClick={ this.redirectToHome }
@@ -56,7 +55,7 @@ class Ranking extends Component {
         >
           Play Again!
         </button>
-      </div>
+      </>
     );
   }
 }
