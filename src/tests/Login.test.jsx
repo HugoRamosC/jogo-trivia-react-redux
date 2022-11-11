@@ -53,7 +53,9 @@ describe('Testa a funcionalidade da Login Page', () => {
     const button = screen.getByTestId('btn-play')
     userEvent.click(button)
     
-    await waitFor(() => expect(history.location.pathname).toBe('/game'), 5000)
+    const btnPlayAgain = await screen.findByTestId('btn-play-again')
+    expect (btnPlayAgain).toBeInTheDocument()
+    expect(history.location.pathname).toBe('/game')
   });
 
   test('Testa se os botões esta desativado quando esta fora dos critérios', () => {
