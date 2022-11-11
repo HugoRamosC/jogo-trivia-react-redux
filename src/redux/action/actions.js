@@ -3,6 +3,8 @@ export const TIMEOUT = 'TIMEOUT';
 export const updateScore = 'updateScore';
 export const getTimerValue = 'getTimerValue';
 export const nextQuestion = 'nextQuestion';
+export const resetTimerFlag = 'resetTimerFlag';
+export const noResetTimerFlag = 'noResetTimerFlag';
 
 export const actionLogin = (state) => ({
   type: login,
@@ -26,4 +28,12 @@ export const actionNextQuestion = () => ({
 export const actionUpdateScore = (updatedScore) => ({
   type: updateScore,
   updatedScore,
+});
+
+export const actionResetTimerFlag = () => ({
+  type: resetTimerFlag,
+});
+
+export const actionNoResetTimerFlag = () => ({
+  type: noResetTimerFlag,
 });
