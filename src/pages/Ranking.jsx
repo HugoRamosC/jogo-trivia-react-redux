@@ -2,6 +2,7 @@ import { MD5 } from 'crypto-js';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { restartScore } from '../redux/action/actions';
 
 class Ranking extends Component {
   state = {
@@ -24,32 +25,55 @@ class Ranking extends Component {
     const { imgGrvtr } = this.state;
     const { name, score } = this.props;
     const newPlyr = { name, score, imgGrvtr };
-    this.setState(
-      (prev) => ({ playersArr: [...prev.playersArr, newPlyr] }),
-      () => {
-        const { playersArr } = this.state;
-        localStorage.setItem('players', JSON.stringify(playersArr));
-      },
-    );
+    // const newArr = [...playersArr, newPlyr];
+    if (!JSON.parse(localStorage.getItem('players'))) {
+      this.setState(
+        (prev) => (
+          { playersArr: [...prev.playersArr, newPlyr] }),
+        () => {
+          const { playersArr } = this.state;
+          localStorage.setItem('players', JSON.stringify(playersArr));
+        },
+      );
+    } else {
+      const players = JSON.parse(localStorage.getItem('players'));
+      this.setState(
+        { playersArr: [...players, newPlyr] },
+        () => {
+          const { playersArr } = this.state;
+          localStorage.setItem('players', JSON.stringify(playersArr));
+        },
+      );
+    }
   };
 
   redirectToHome = () => {
-    const { history } = this.props;
+    const { history, dispatch } = this.props;
     history.push('/');
+    dispatch(restartScore());
   };
 
   render() {
-    const arrPlayers = JSON.parse(localStorage.getItem('players'))
-      ? JSON.parse(localStorage.getItem('players'))
-      : ['test'];
-    console.log(arrPlayers);
-    // .sort((a, b) => a.score - b.score);
+    // const arrPlayers = JSON.parse(localStorage.getItem('players'))
+    //   ? JSON.parse(localStorage.getItem('players'))
+    //   : ['test'];
+    const { playersArr } = this.state;
+    console.log(playersArr);
+    const orderArr = playersArr.sort((a, b) => b.score - a.score);
+    console.log(orderArr);
     return (
       <>
         <h1 data-testid="ranking-title">Ranking</h1>
+        <button
+          type="button"
+          onClick={ this.redirectToHome }
+          data-testid="btn-go-home"
+        >
+          Play Again!
+        </button>
         <ol>
-          { arrPlayers.length > 0
-            ? arrPlayers.map((player, index) => (
+          { orderArr.length > 0
+            ? orderArr.map((player, index) => (
               <li key={ index }>
                 <img src={ `https://www.gravatar.com/avatar/${player.imgGrvtr}` } alt="avatarImage" />
                 <h3 data-testid={ `player-name-${index}` }>{ player.name }</h3>
@@ -58,13 +82,6 @@ class Ranking extends Component {
             ))
             : null}
         </ol>
-        <button
-          type="button"
-          onClick={ this.redirectToHome }
-          data-testid="btn-go-home"
-        >
-          Play Again!
-        </button>
       </>
     );
   }

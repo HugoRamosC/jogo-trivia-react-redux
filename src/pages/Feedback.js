@@ -3,6 +3,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import Feedbackmessage from '../components/Feedbackmessage';
 import Header from '../components/Header';
+import { restartScore } from '../redux/action/actions';
 
 class Feedback extends React.Component {
   redirectToRanking = () => {
@@ -11,8 +12,9 @@ class Feedback extends React.Component {
   };
 
   reloadStart = () => {
-    const { history } = this.props;
+    const { history, dispatch } = this.props;
     history.push('/');
+    dispatch(restartScore());
   };
 
   render() {
