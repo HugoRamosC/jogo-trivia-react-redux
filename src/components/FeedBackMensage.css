@@ -1,21 +1,20 @@
 img {
   border-radius: 50%;
+  box-shadow: 0 0 20px 2px #566573;
   text-align: center;
-  box-shadow: 0px 0px 20px 2px #566573;
   margin-top: 50px;
 }
 
 .card-feedBack-msg {
+  background-color: #282c34;
+  border: solid 5px #21242a;
+  border-radius: 15px;
+  box-shadow: 0 0 50px 1px #17202a inset;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  width: 40%;
-  background-color: #282c34;
-  border-radius: 15px;
-  justify-content: center;
   margin: auto;
-  border: solid 5px #21242A;
-  box-shadow: 0px 0px 50px 1px #17202A inset;
+  width: 40%;
 }
 
 .feedBack-msg {
