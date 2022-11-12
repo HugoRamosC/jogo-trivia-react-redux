@@ -52,10 +52,12 @@ describe('Testa a funcionalidade da Login Page', () => {
 
     const button = screen.getByTestId('btn-play')
     userEvent.click(button)
-    
-    const btnPlayAgain = await screen.findByTestId('btn-play-again')
-    expect (btnPlayAgain).toBeInTheDocument()
-    expect(history.location.pathname).toBe('/game')
+
+    await waitFor(()=>{
+      const btnPlayAgain =  screen.getByTestId('btn-play-again')
+      expect (btnPlayAgain).toBeInTheDocument()
+      expect(history.location.pathname).toBe('/game')
+    }, {timeout: 4000})
   });
 
   test('Testa se os botões esta desativado quando esta fora dos critérios', () => {

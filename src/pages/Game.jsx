@@ -66,6 +66,7 @@ class Game extends React.Component {
     const { history } = this.props;
     const token = localStorage.getItem('token');
     const request = await fetch(`https://opentdb.com/api.php?amount=5&token=${token}`);
+    console.log(request);
     const data = await request.json();
     const code = 3;
     // response_code é um paramentro da API que diz se deu erro (3) ou tudo ok (0)
@@ -87,9 +88,6 @@ class Game extends React.Component {
     const three = 3;
     let difficulty = 1;
     switch (question.difficulty) {
-    case 'easy':
-      difficulty = 1;
-      break;
     case 'medium':
       difficulty = 2;
       break;
@@ -97,6 +95,7 @@ class Game extends React.Component {
       difficulty = three;
       break;
     default:
+      difficulty = 1;
       break;
     }
     if (answer === correctAnswer) {
@@ -145,11 +144,11 @@ class Game extends React.Component {
   };
 
   shuffleArray(inputArray) {
-    if (inputArray.length > 0) {
-      const zeroFive = 0.5;
-      const arr = inputArray.sort(() => Math.random() - zeroFive);
-      return arr;
-    }
+    // if (inputArray.length > 0) {
+    const zeroFive = 0.5;
+    const arr = inputArray.sort(() => Math.random() - zeroFive);
+    return arr;
+    // }
   }
 
   render() {
@@ -170,7 +169,7 @@ class Game extends React.Component {
               <p data-testid="question-text">{question.question}</p>
               <div data-testid="answer-options">
 
-                {sortedQuestions.length > 0 ? sortedQuestions.map((a, index) => (
+                {sortedQuestions.map((a, index) => (
                   <button
                     className={ answerActive ? this.checkClass(a) : '' }
                     data-testid={ a === correctAnswer
@@ -183,7 +182,7 @@ class Game extends React.Component {
                   >
                     {a}
                   </button>
-                )) : null }
+                ))}
               </div>
               <Timer />
             </>

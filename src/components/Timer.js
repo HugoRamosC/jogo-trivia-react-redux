@@ -6,7 +6,8 @@ import { actionNoResetTimerFlag, finishTime, getTimer } from '../redux/action/ac
 class Timer extends Component {
   state = {
     time: 30,
-    intervalCreated: false,
+    // intervalCreated: false,
+    interval: '',
   };
 
   componentDidMount() {
@@ -30,19 +31,24 @@ class Timer extends Component {
     }
   }
 
+  componentWillUnmount() {
+    const { interval } = this.state;
+    clearInterval(interval);
+  }
+
   createInterval = () => {
-    const { intervalCreated, time } = this.state;
-    let interval = '';
-    if (!intervalCreated) {
-      const ONE_SECOND = 1000;
-      interval = setInterval(() => {
-        this.setState((prev) => ({ time: prev.time - 1 }));
-      }, ONE_SECOND);
-      this.setState({ intervalCreated: true });
-    }
-    if (time === 0) {
-      clearInterval(interval);
-    }
+    // const { intervalCreated } = this.state;
+    // let interval = '';
+    // if (!intervalCreated) {
+    const ONE_SECOND = 1000;
+    const int = setInterval(() => {
+      this.setState((prev) => ({ /* intervalCreated: true, */ time: prev.time - 1 }));
+    }, ONE_SECOND);
+    this.setState({ interval: int });
+    // }
+    // if (time === 0) {
+    //   clearInterval(interval);
+    // }
   };
 
   render() {
@@ -53,7 +59,7 @@ class Timer extends Component {
         {
           answerActive
             ? <p>Tempo esgotado!</p>
-            : timerValue
+            : <p data-testid="timer">{timerValue}</p>
         }
       </div>
     );

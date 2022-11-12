@@ -21,6 +21,7 @@ class Login extends React.Component {
   redirectToGame = async () => {
     const { history, dispatch } = this.props;
     const getToken = await triviaTokenApi();
+    console.log(getToken);
     localStorage.setItem('token', getToken);
     dispatch(actionLogin(this.state));
     dispatch(actionResetTimerFlag());
